@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>post</title>
+</head>
+
+<body>
+	{% for i in items %}
+	<div>
+		<h3>{{i.title}}</h3>
+		<p>{{i.content}}</p>
+		<p>{{i.user.name}}</p>
+	</div>
+	{% endfor %}
+</body>
+</html>
