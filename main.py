@@ -22,3 +22,7 @@ def hello_world():
 def post_test():
 	items = session.query(Post).all()
 	return render_template('test-post.html', items=items)
+
+@app.route('/newpost')
+def newPost():
+	return render_template('newpost.html')

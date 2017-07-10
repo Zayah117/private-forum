@@ -5,12 +5,13 @@
 </head>
 <body>
 	<h1>New Post</h1>
-	<form action="{{url_for('newPost')}}" method="POST">
+	<form action="{{url_for('newPost')}}" method="POST" id="myform">
 		<p>Title:</p>
 		<input type="text" size="80" name="title">
 		<p>Content:</p>
-		<input type="text" size="250" name="content">
 		<input type="submit" value="Post">
 	</form>
+	<textarea name="content" form="myform">
+	</textarea>
 </body>
 </html>
