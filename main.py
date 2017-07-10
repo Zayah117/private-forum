@@ -1,9 +1,11 @@
 from flask import Flask
-from flask import render_template
+from flask import render_template, request, redirect, url_for, flash
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, User, Post
+
+import requests
 
 app = Flask(__name__, static_url_path='/static/*')
 
