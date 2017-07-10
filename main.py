@@ -18,4 +18,5 @@ def hello_world():
 
 @app.route('/test')
 def post_test():
-	return render_template('test-post.html', items=None)
+	items = session.query(Post).all()
+	return render_template('test-post.html', items=items)
