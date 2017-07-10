@@ -7,6 +7,11 @@ from database_setup import Base, User, Post
 
 app = Flask(__name__, static_url_path='/static/*')
 
+engine = create_engine('sqlite:///data.db')
+Base.metadata.bind = engine
+DBSession = sessionmaker(bind = engine)
+session = DBSession()
+
 @app.route('/')
 def hello_world():
 	return render_template('front.html')
