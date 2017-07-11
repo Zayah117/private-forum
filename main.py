@@ -32,3 +32,7 @@ def new_post():
 		return redirect(url_for('post_test'))
 	else:
 		return render_template('newpost.html')
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+	return render_template('signup.html')
