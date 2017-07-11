@@ -23,6 +23,12 @@ def post_test():
 	items = session.query(Post).all()
 	return render_template('test-post.html', items=items)
 
-@app.route('/newpost')
-def newPost():
-	return render_template('newpost.html')
+@app.route('/newpost', methods=['GET', 'POST'])
+def new_post():
+	if request.method == 'POST':
+		newPost = Post(user_id=1, title=request.form['title'], content=request.form['content'])
+		session.add(newPost)
+		session.commit()
+		return redirect(url_for('post_test'))
+	else:
+		return render_template('newpost.html')
