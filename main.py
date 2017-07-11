@@ -1,7 +1,7 @@
 from flask import Flask
 from flask import render_template, request, redirect, url_for, flash
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, desc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, User, Post
 
@@ -20,7 +20,7 @@ def hello_world():
 
 @app.route('/test')
 def post_test():
-	items = session.query(Post).all()
+	items = session.query(Post).order_by(desc(Post.created_date)).all()
 	return render_template('test-post.html', items=items)
 
 @app.route('/newpost', methods=['GET', 'POST'])
