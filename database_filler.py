@@ -11,7 +11,7 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 # generic user
-user = User(name='Bob')
+user = User(name='Bob', password_hash='temp_hash')
 session.add(user)
 session.commit()
 
