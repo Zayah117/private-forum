@@ -27,8 +27,8 @@ def post_test():
 @app.route('/newpost', methods=['GET', 'POST'])
 def new_post():
 	if request.method == 'POST':
-		newPost = Post(user_id=1, title=request.form['title'], content=request.form['content'])
-		session.add(newPost)
+		new_post = Post(user_id=1, title=request.form['title'], content=request.form['content'])
+		session.add(new_post)
 		session.commit()
 		return redirect(url_for('post_test'))
 	else:
@@ -36,4 +36,10 @@ def new_post():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-	return render_template('signup.html')
+	if request.method == 'POST':
+		new_user = User(name=request.form['username'], password_hash=request.form['password'])
+		session.add(new_user)
+		session.commit()
+		return redirect(url_for('post_test'))
+	else:
+		return render_template('signup.html')
