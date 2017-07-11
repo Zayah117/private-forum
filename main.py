@@ -21,7 +21,8 @@ def hello_world():
 @app.route('/test')
 def post_test():
 	items = session.query(Post).order_by(desc(Post.created_date)).all()
-	return render_template('test-post.html', items=items)
+	users = session.query(User).all()
+	return render_template('test-post.html', items=items, users=users)
 
 @app.route('/newpost', methods=['GET', 'POST'])
 def new_post():

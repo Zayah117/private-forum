@@ -13,5 +13,12 @@
 		<p><i>{{i.created_date}}</i></p>
 	</div>
 	{% endfor %}
+	<h2>USERS:</h2>
+	{% for i in users %}
+	<div>
+		<p>{{i.name}}</p>
+		<p><i>{{i.password_hash}}</i></p>
+	</div>
+	{% endfor %}
 </body>
 </html>
