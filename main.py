@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash, session
 
 from sqlalchemy import create_engine, desc
 from sqlalchemy.orm import sessionmaker
