@@ -43,3 +43,10 @@ def signup():
 		return redirect(url_for('post_test'))
 	else:
 		return render_template('signup.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+	if request.method == 'POST':
+		pass
+	else:
+		return render_template('login.html')
