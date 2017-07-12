@@ -47,6 +47,7 @@ def signup():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	if request.method == 'POST':
-		pass
+		user = session.query(User).filter(User.name == request.form['username'] and User.password_hash == request.form['password'])
+		return redirect(url_for('post_test'))
 	else:
 		return render_template('login.html')
