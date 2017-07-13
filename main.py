@@ -1,5 +1,6 @@
 from flask import Flask
-from flask import render_template, request, redirect, url_for, flash, session
+from flask import render_template, request, redirect, url_for, flash
+from flask import session as session_info
 
 from sqlalchemy import create_engine, desc
 from sqlalchemy.orm import sessionmaker
@@ -8,6 +9,7 @@ from database_setup import Base, User, Post
 import requests
 
 app = Flask(__name__, static_url_path='/static/*')
+app.config['SECRET_KEY'] = 'super_secret'
 
 engine = create_engine('sqlite:///data.db')
 Base.metadata.bind = engine
@@ -47,7 +49,15 @@ def signup():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	if request.method == 'POST':
-		user = session.query(User).filter(User.name == request.form['username'] and User.password_hash == request.form['password'])
+		try:
+			user = session.query(User).filter(User.name == request.form['username']).filter(User.password_hash == request.form['password']).one()
+		except:
+			user = None
+		if user:
+			session_info['username'] = user.name
+		else:
+			session_info['username'] = ''
+		return str(session_info['username'])
 		return redirect(url_for('post_test'))
 	else:
 		return render_template('login.html')
