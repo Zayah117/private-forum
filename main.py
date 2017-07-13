@@ -4,6 +4,7 @@ from flask import session as session_info
 
 from sqlalchemy import create_engine, desc
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from database_setup import Base, User, Post
 
 import requests
@@ -51,7 +52,9 @@ def login():
 	if request.method == 'POST':
 		try:
 			user = session.query(User).filter(User.name == request.form['username']).filter(User.password_hash == request.form['password']).one()
-		except:
+		except MultipleResultsFound:
+			user = None
+		except NoResultFound:
 			user = None
 		if user:
 			session_info['username'] = user.name
