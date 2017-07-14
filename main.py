@@ -74,3 +74,8 @@ def login():
 		# return str(session_info['username'])
 	else:
 		return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+	del session_info['username']
+	return "You have logged out."
