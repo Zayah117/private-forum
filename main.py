@@ -8,6 +8,7 @@ from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from database_setup import Base, User, Post
 
 import requests
+from functools import wraps
 
 app = Flask(__name__, static_url_path='/static/*')
 app.config['SECRET_KEY'] = 'super_secret'
@@ -16,6 +17,14 @@ engine = create_engine('sqlite:///data.db')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind = engine)
 session = DBSession()
+
+def login_required(f):
+	@wraps(f)
+	def decorated_function(*args, **kwargs):
+		if 'username' not in session_info:
+			return redirect(url_for('login', next=request.url))
+		return f(*args, **kwargs)
+	return decorated_function
 
 @app.route('/')
 def hello_world():
@@ -28,6 +37,7 @@ def post_test():
 	return render_template('test-post.html', items=items, users=users)
 
 @app.route('/newpost', methods=['GET', 'POST'])
+@login_required
 def new_post():
 	if request.method == 'POST':
 		new_post = Post(user_id=1, title=request.form['title'], content=request.form['content'])
@@ -58,9 +68,9 @@ def login():
 			user = None
 		if user:
 			session_info['username'] = user.name
+			return redirect(url_for('post_test'))
 		else:
-			session_info['username'] = ''
-		return str(session_info['username'])
-		return redirect(url_for('post_test'))
+			return redirect(url_for('login'))
+		# return str(session_info['username'])
 	else:
 		return render_template('login.html')
