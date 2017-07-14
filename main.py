@@ -45,7 +45,7 @@ def post_test():
 @login_required
 def new_post():
 	if request.method == 'POST':
-		new_post = Post(user_id=1, title=request.form['title'], content=request.form['content'])
+		new_post = Post(user_id=session_info['user_id'], title=request.form['title'], content=request.form['content'])
 		session.add(new_post)
 		session.commit()
 		return redirect(url_for('post_test'))
