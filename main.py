@@ -73,6 +73,7 @@ def login():
 			user = None
 		if user:
 			session_info['username'] = user.name
+			session_info['user_id'] = user.id
 			return redirect(url_for('post_test'))
 		else:
 			return redirect(url_for('login'))
@@ -83,4 +84,5 @@ def login():
 @app.route('/logout')
 def logout():
 	del session_info['username']
+	del session_info['user_id']
 	return "You have logged out."
