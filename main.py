@@ -11,7 +11,12 @@ import requests
 from functools import wraps
 
 app = Flask(__name__, static_url_path='/static/*')
-app.config['SECRET_KEY'] = 'super_secret'
+
+my_file = open("secret_key.txt", "r")
+my_key = my_file.read()
+my_file.close()
+
+app.config['SECRET_KEY'] = my_key
 
 engine = create_engine('sqlite:///data.db')
 Base.metadata.bind = engine
