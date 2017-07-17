@@ -88,7 +88,7 @@ def login():
 		try:
 			user = session.query(User).filter(User.name == request.form['username']).filter(User.password_hash == request.form['password']).one()
 		except MultipleResultsFound:
-			user = None
+			return 'Multiple results found. Contact system administrator. (This should not happen.)'
 		except NoResultFound:
 			user = None
 		if user:
