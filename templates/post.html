@@ -12,5 +12,18 @@
 		<p>{{post.user.name}}</p>
 		<p><i>{{post.created_date}}</i></p>
 	</div>
+	<form method="POST" id="myform">
+		<p>Comment:</p>
+		<textarea name="content" form="myform" rows="8" cols="50"></textarea>
+		<br><br>
+		<input type="submit" value="Post">
+	</form>
+	{% for i in comments %}
+	<div>
+		<p><b>{{i.user.name}}</b></p>
+		<p>{{i.content}}</p>
+		<p><i>{{i.created_date}}</i></p>
+	</div>
+	{% endfor %}
 </body>
 </html>

@@ -5,7 +5,7 @@ from flask import session as session_info
 from sqlalchemy import create_engine, desc
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
-from database_setup import Base, User, Post
+from database_setup import Base, User, Post, Comment
 
 import requests
 from functools import wraps
@@ -52,13 +52,21 @@ def new_post():
 	else:
 		return render_template('newpost.html')
 
-@app.route('/post/<int:post_id>')
+@app.route('/post/<int:post_id>', methods=['GET', 'POST'])
 def post(post_id):
-	post = session.query(Post).get(post_id)
-	if post:
-		return render_template('post.html', post=post)
+	if request.method == 'POST':
+		# NEED TO IMPLEMENT LOGIN REQUIRED
+		new_comment = Comment(user_id=session_info['user_id'], post_id=post_id, content=request.form['content'])
+		session.add(new_comment)
+		session.commit()
+		return redirect(url_for('post', post_id=post_id))
 	else:
-		return redirect(url_for('post_test'))
+		post = session.query(Post).get(post_id)
+		comments = session.query(Comment).filter(Comment.post_id == post_id).all()
+		if post:
+			return render_template('post.html', post=post, comments=comments)
+		else:
+			return redirect(url_for('post_test'))
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
