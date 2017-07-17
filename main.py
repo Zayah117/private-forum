@@ -52,6 +52,14 @@ def new_post():
 	else:
 		return render_template('newpost.html')
 
+@app.route('/post/<int:post_id>')
+def post(post_id):
+	post = session.query(Post).get(post_id)
+	if post:
+		return render_template('post.html', post=post)
+	else:
+		return redirect(url_for('post_test'))
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
 	if request.method == 'POST':
