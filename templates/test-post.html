@@ -21,5 +21,13 @@
 		<p><i>{{i.password_hash}}</i></p>
 	</div>
 	{% endfor %}
+	<h2>COMMENTS:</h2>
+	{% for i in comments %}
+	<div>
+		<p><i>{{i.id}}</i></p>
+		<p><b>{{i.post.title}}</b></p>
+		<p>{{i.content}}</p>
+	</div>
+	{% endfor %}
 </body>
 </html>

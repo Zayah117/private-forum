@@ -39,7 +39,8 @@ def hello_world():
 def post_test():
 	items = session.query(Post).order_by(desc(Post.created_date)).all()
 	users = session.query(User).all()
-	return render_template('test-post.html', items=items, users=users)
+	comments = session.query(Comment).all()
+	return render_template('test-post.html', items=items, users=users, comments=comments)
 
 @app.route('/newpost', methods=['GET', 'POST'])
 @login_required
