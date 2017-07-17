@@ -55,8 +55,12 @@ def new_post():
 @app.route('/post/<int:post_id>', methods=['GET', 'POST'])
 def post(post_id):
 	if request.method == 'POST':
-		# NEED TO IMPLEMENT LOGIN REQUIRED
-		new_comment = Comment(user_id=session_info['user_id'], post_id=post_id, content=request.form['content'])
+		try:
+			user_id = session_info['user_id']
+		except:
+			return redirect(url_for('login'))
+
+		new_comment = Comment(user_id=user_id, post_id=post_id, content=request.form['content'])
 		session.add(new_comment)
 		session.commit()
 		return redirect(url_for('post', post_id=post_id))
