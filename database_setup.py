@@ -25,6 +25,17 @@ class Post(Base):
 	user_id = Column(Integer, ForeignKey('user.id'))
 	created_date = Column(DateTime, default=datetime.datetime.utcnow)
 
+class Comment(Base):
+	__tablename__ = 'comment'
+
+	id = Column(Integer, primary_key=True)
+	content = Column(String(1000), nullable=False)
+	user = relationship(User)
+	user_id = Column(Integer, ForeignKey('user.id'))
+	post = relationship(Post)
+	post_id = Column(Integer, ForeignKey('post.id'))
+	created_date = Column(DateTime, default=datetime.datetime.utcnow)
+
 engine = create_engine('sqlite:///data.db')
 
 Base.metadata.create_all(engine)
