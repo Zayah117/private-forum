@@ -73,6 +73,19 @@ def post(post_id):
 		else:
 			return redirect(url_for('post_test'))
 
+@app.route('/post/<int:post_id>/delete', methods=['GET'])
+def delete_post(post_id):
+    post = session.query(Post).get(post_id)
+    comments = session.query(Comment).filter(Comment.post_id == post_id).all()
+    if post:
+        session.delete(post)
+        for i in range(len(comments)):
+            session.delete(comments[i])
+        session.commit()
+        return redirect(url_for('post_test'))
+    else:
+        return redirect(url_for('post_test'))
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
 	if request.method == 'POST':
