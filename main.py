@@ -75,13 +75,19 @@ def post(post_id):
 
 @app.route('/post/<int:post_id>/delete', methods=['GET'])
 def delete_post(post_id):
+    try:
+        user_id = session_info['user_id']
+    except:
+        return redirect(url_for('login'))
+
     post = session.query(Post).get(post_id)
     comments = session.query(Comment).filter(Comment.post_id == post_id).all()
     if post:
-        session.delete(post)
-        for i in range(len(comments)):
-            session.delete(comments[i])
-        session.commit()
+        if post.user_id == user_id:
+            session.delete(post)
+            for i in range(len(comments)):
+                session.delete(comments[i])
+            session.commit()
         return redirect(url_for('post_test'))
     else:
         return redirect(url_for('post_test'))
