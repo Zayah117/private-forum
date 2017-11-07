@@ -119,6 +119,9 @@ def login():
 
 @app.route('/logout')
 def logout():
+    try:
 	del session_info['username']
 	del session_info['user_id']
-	return "You have logged out."
+    except:
+        pass
+    return "You have logged out."
