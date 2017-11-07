@@ -74,12 +74,8 @@ def post(post_id):
 			return redirect(url_for('post_test'))
 
 @app.route('/post/<int:post_id>/delete', methods=['GET'])
+@login_required
 def delete_post(post_id):
-    try:
-        user_id = session_info['user_id']
-    except:
-        return redirect(url_for('login'))
-
     post = session.query(Post).get(post_id)
     comments = session.query(Comment).filter(Comment.post_id == post_id).all()
     if post:
