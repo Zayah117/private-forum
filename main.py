@@ -8,6 +8,8 @@ from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from database_setup import Base, User, Post, Comment
 
 import requests
+import uuid
+import hashlib
 from functools import wraps
 
 app = Flask(__name__, static_url_path='/static/*')
@@ -23,6 +25,17 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind = engine)
 session = DBSession()
 
+
+def hash_password(password):
+    salt = uuid.uuid4().hex
+    return hashlib.sha256(salt.encode() + password.encode()).hexdigest() + "," + salt
+
+
+def check_password(hashed_password, user_password):
+    password, salt = hashed_password.split(",")
+    return password == hashlib.sha256(salt.encode() + user_password.encode()).hexdigest()
+
+
 def login_required(f):
 	@wraps(f)
 	def decorated_function(*args, **kwargs):
@@ -35,12 +48,14 @@ def login_required(f):
 def hello_world():
 	return render_template('front.html')
 
+
 @app.route('/test')
 def post_test():
 	items = session.query(Post).order_by(desc(Post.created_date)).all()
 	users = session.query(User).all()
 	comments = session.query(Comment).all()
 	return render_template('test-post.html', items=items, users=users, comments=comments)
+
 
 @app.route('/newpost', methods=['GET', 'POST'])
 @login_required
@@ -52,6 +67,7 @@ def new_post():
 		return redirect(url_for('post_test'))
 	else:
 		return render_template('newpost.html')
+
 
 @app.route('/post/<int:post_id>', methods=['GET', 'POST'])
 def post(post_id):
@@ -73,6 +89,7 @@ def post(post_id):
 		else:
 			return redirect(url_for('post_test'))
 
+
 @app.route('/post/<int:post_id>/delete', methods=['GET'])
 @login_required
 def delete_post(post_id):
@@ -88,6 +105,7 @@ def delete_post(post_id):
     else:
         return redirect(url_for('post_test'))
 
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
 	if request.method == 'POST':
@@ -97,6 +115,7 @@ def signup():
 		return redirect(url_for('post_test'))
 	else:
 		return render_template('signup.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -116,6 +135,7 @@ def login():
 		# return str(session_info['username'])
 	else:
 		return render_template('login.html')
+
 
 @app.route('/logout')
 def logout():
