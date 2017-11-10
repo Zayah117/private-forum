@@ -109,29 +109,37 @@ def delete_post(post_id):
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
 	if request.method == 'POST':
-		new_user = User(name=request.form['username'], password_hash=request.form['password'])
-		session.add(new_user)
-		session.commit()
-		return redirect(url_for('post_test'))
+            # See if user already exists
+            try:
+                user = session.query(User).filter(User.name == request.form['username']).one()
+                if user:
+                    return "User already exists"
+            except (NoResultFound, MultipleResultsFound) as e:
+                pass
+
+            new_user = User(name=request.form['username'], password_hash=hash_password(request.form['password']))
+            session.add(new_user)
+            session.commit()
+            return redirect(url_for('post_test'))
 	else:
-		return render_template('signup.html')
+            return render_template('signup.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	if request.method == 'POST':
 		try:
-			user = session.query(User).filter(User.name == request.form['username']).filter(User.password_hash == request.form['password']).one()
+                    user = session.query(User).filter(User.name == request.form['username']).one()
 		except MultipleResultsFound:
-			return 'Multiple results found. Contact system administrator. (This should not happen.)'
+                    return 'Multiple results found. Contact system administrator. (This should not happen.)'
 		except NoResultFound:
-			user = None
-		if user:
-			session_info['username'] = user.name
-			session_info['user_id'] = user.id
-			return redirect(url_for('post_test'))
+                    user = None
+                if user and check_password(user.password_hash, request.form['password']):
+                    session_info['username'] = user.name
+                    session_info['user_id'] = user.id
+                    return redirect(url_for('post_test'))
 		else:
-			return redirect(url_for('login'))
+                    return redirect(url_for('login'))
 		# return str(session_info['username'])
 	else:
 		return render_template('login.html')
