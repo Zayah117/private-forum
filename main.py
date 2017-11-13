@@ -37,28 +37,26 @@ def check_password(hashed_password, user_password):
 
 
 def get_user_id():
-    try:
-        user_id = session_info['user_id']
-    except:
-        user_id = None
-    return user_id
+    if 'user_id' in session_info:
+        return session_info['user_id']
+    else:
+        return None
 
 
 def get_username():
-    try:
-        username = session_info['username']
-    except:
-        username = None
-    return username
+    if 'username' in session_info:
+        return session_info['username']
+    else:
+        return None
 
 
 def login_required(f):
-	@wraps(f)
-	def decorated_function(*args, **kwargs):
-		if 'username' not in session_info:
-			return redirect(url_for('login', next=request.url))
-		return f(*args, **kwargs)
-	return decorated_function
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' not in session_info:
+            return redirect(url_for('login', next=request.url))
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 @app.route('/')
