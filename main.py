@@ -44,6 +44,14 @@ def get_user_id():
     return user_id
 
 
+def get_username():
+    try:
+        username = session_info['username']
+    except:
+        username = None
+    return username
+
+
 def login_required(f):
 	@wraps(f)
 	def decorated_function(*args, **kwargs):
