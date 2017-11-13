@@ -45,16 +45,18 @@ def login_required(f):
 	return decorated_function
 
 @app.route('/')
-def hello_world():
-	return render_template('front.html')
+@app.route('/front')
+def main():
+    posts = session.query(Post).order_by(desc(Post.created_date)).all()
+    return render_template('front.html', posts=posts)
 
 
 @app.route('/test')
 def post_test():
-	items = session.query(Post).order_by(desc(Post.created_date)).all()
-	users = session.query(User).all()
-	comments = session.query(Comment).all()
-	return render_template('test-post.html', items=items, users=users, comments=comments)
+    items = session.query(Post).order_by(desc(Post.created_date)).all()
+    users = session.query(User).all()
+    comments = session.query(Comment).all()
+    return render_template('test-post.html', items=items, users=users, comments=comments)
 
 
 @app.route('/newpost', methods=['GET', 'POST'])

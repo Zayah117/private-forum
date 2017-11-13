@@ -1,4 +1,11 @@
 {% extends "layout.html" %}
 {% block content %}
-    <p>test</p>
+    <div>
+        {% for post in posts %}
+        <div class="post">
+            <a href="/post/{{post.id}}">{{post.title}}</a>
+            <p>by {{post.user.name}}, date {{post.created_date.strftime("%m/%d/%y")}}</p>
+        </div>
+        {% endfor %}
+    </div>
 {% endblock %}
