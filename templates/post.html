@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>post</title>
-</head>
-
-<body>
-	<div>
+{% extends "layout.html" %}
+{% block content %}
+    <div>
 		<h3>{{post.title}}</h3>
 		<p><i>{{post.id}}</i></p>
 		<p>{{post.content}}</p>
@@ -25,5 +20,4 @@
 		<p><i>{{i.created_date}}</i></p>
 	</div>
 	{% endfor %}
-</body>
-</html>
+{% endblock %}

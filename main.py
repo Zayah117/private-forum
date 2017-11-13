@@ -91,23 +91,24 @@ def new_post():
 
 @app.route('/post/<int:post_id>', methods=['GET', 'POST'])
 def post(post_id):
-	if request.method == 'POST':
-		try:
-			user_id = session_info['user_id']
-		except:
-			return redirect(url_for('login'))
+    if request.method == 'POST':
+        try:
+                user_id = session_info['user_id']
+        except:
+                return redirect(url_for('login'))
 
-		new_comment = Comment(user_id=user_id, post_id=post_id, content=request.form['content'])
-		session.add(new_comment)
-		session.commit()
-		return redirect(url_for('post', post_id=post_id))
-	else:
-		post = session.query(Post).get(post_id)
-		comments = session.query(Comment).filter(Comment.post_id == post_id).all()
-		if post:
-			return render_template('post.html', post=post, comments=comments)
-		else:
-			return redirect(url_for('post_test'))
+        new_comment = Comment(user_id=user_id, post_id=post_id, content=request.form['content'])
+        session.add(new_comment)
+        session.commit()
+        return redirect(url_for('post', post_id=post_id))
+    else:
+        user_id = get_user_id()
+        post = session.query(Post).get(post_id)
+        comments = session.query(Comment).filter(Comment.post_id == post_id).all()
+        if post:
+                return render_template('post.html', post=post, comments=comments, user=user_id)
+        else:
+                return redirect(url_for('post_test'))
 
 
 @app.route('/post/<int:post_id>/delete', methods=['GET'])
