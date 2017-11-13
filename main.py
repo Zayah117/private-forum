@@ -36,6 +36,14 @@ def check_password(hashed_password, user_password):
     return password == hashlib.sha256(salt.encode() + user_password.encode()).hexdigest()
 
 
+def get_user_id():
+    try:
+        user_id = session_info['user_id']
+    except:
+        user_id = None
+    return user_id
+
+
 def login_required(f):
 	@wraps(f)
 	def decorated_function(*args, **kwargs):
@@ -44,11 +52,13 @@ def login_required(f):
 		return f(*args, **kwargs)
 	return decorated_function
 
+
 @app.route('/')
 @app.route('/front')
 def main():
+    user_id = get_user_id()
     posts = session.query(Post).order_by(desc(Post.created_date)).all()
-    return render_template('front.html', posts=posts)
+    return render_template('front.html', posts=posts, user=user_id)
 
 
 @app.route('/test')
