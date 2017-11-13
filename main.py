@@ -147,22 +147,21 @@ def signup():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-	if request.method == 'POST':
-		try:
-                    user = session.query(User).filter(User.name == request.form['username']).one()
-		except MultipleResultsFound:
-                    return 'Multiple results found. Contact system administrator. (This should not happen.)'
-		except NoResultFound:
-                    user = None
-                if user and check_password(user.password_hash, request.form['password']):
-                    session_info['username'] = user.name
-                    session_info['user_id'] = user.id
-                    return redirect(url_for('post_test'))
-		else:
-                    return redirect(url_for('login'))
-		# return str(session_info['username'])
-	else:
-		return render_template('login.html')
+    if request.method == 'POST':
+        try:
+            user = session.query(User).filter(User.name == request.form['username']).one()
+        except MultipleResultsFound:
+            return 'Multiple results found. Contact system administrator. (This should not happen.)'
+        except NoResultFound:
+            user = None
+        if user and check_password(user.password_hash, request.form['password']):
+            session_info['username'] = user.name
+            session_info['user_id'] = user.id
+            return redirect(url_for('main'))
+        else:
+            return redirect(url_for('login'))
+    else:
+        return render_template('login.html')
 
 
 @app.route('/logout')
