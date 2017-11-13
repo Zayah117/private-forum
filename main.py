@@ -172,4 +172,4 @@ def logout():
 	del session_info['user_id']
     except:
         pass
-    return "You have logged out."
+    return redirect(url_for('main'))
