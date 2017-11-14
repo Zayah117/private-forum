@@ -59,16 +59,6 @@ def login_required(f):
     return decorated_function
 
 
-'''
-@app.route('/test')
-def post_test():
-    items = session.query(Post).order_by(desc(Post.created_date)).all()
-    users = session.query(User).all()
-    comments = session.query(Comment).all()
-    return render_template('test-post.html', items=items, users=users, comments=comments)
-'''
-
-
 @app.route('/')
 @app.route('/front')
 def main():
