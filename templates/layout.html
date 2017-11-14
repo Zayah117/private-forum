@@ -6,7 +6,7 @@
     <body>
         <div id="menu">
             <a href="/"><b>Private Forum</b></a>
-            {% if user %}
+            {% if current_user %}
             <a href="/newpost">New Post</a>
             <a href="/logout">Logout</a>
             {% else %}

@@ -64,7 +64,7 @@ def login_required(f):
 def main():
     user_id = get_user_id()
     posts = session.query(Post).order_by(desc(Post.created_date)).all()
-    return render_template('front.html', posts=posts, user=user_id)
+    return render_template('front.html', posts=posts, current_user=user_id)
 
 
 @app.route('/test')
@@ -85,7 +85,7 @@ def new_post():
         return redirect(url_for('main'))
     else:
         user_id = get_user_id()
-        return render_template('newpost.html', user=user_id)
+        return render_template('newpost.html', current_user=user_id)
 
 
 @app.route('/post/<int:post_id>', methods=['GET', 'POST'])
@@ -105,7 +105,7 @@ def post(post_id):
         post = session.query(Post).get(post_id)
         comments = session.query(Comment).filter(Comment.post_id == post_id).all()
         if post:
-                return render_template('post.html', post=post, comments=comments, user=user_id)
+                return render_template('post.html', post=post, comments=comments, current_user=user_id)
         else:
                 return redirect(url_for('post_test'))
 
