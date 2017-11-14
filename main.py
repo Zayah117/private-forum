@@ -82,7 +82,7 @@ def new_post():
         new_post = Post(user_id=session_info['user_id'], title=request.form['title'], content=request.form['content'])
         session.add(new_post)
         session.commit()
-        return redirect(url_for('front'))
+        return redirect(url_for('main'))
     else:
         user_id = get_user_id()
         return render_template('newpost.html', user=user_id)
