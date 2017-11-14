@@ -59,55 +59,58 @@ def login_required(f):
     return decorated_function
 
 
-@app.route('/')
-@app.route('/front')
-def main():
-    user_id = get_user_id()
-    posts = session.query(Post).order_by(desc(Post.created_date)).all()
-    return render_template('front.html', posts=posts, current_user=user_id)
-
-
+'''
 @app.route('/test')
 def post_test():
     items = session.query(Post).order_by(desc(Post.created_date)).all()
     users = session.query(User).all()
     comments = session.query(Comment).all()
     return render_template('test-post.html', items=items, users=users, comments=comments)
+'''
+
+
+@app.route('/')
+@app.route('/front')
+def main():
+    posts = session.query(Post).order_by(desc(Post.created_date)).all()
+    return render_template('front.html', posts=posts, current_user=get_user_id())
 
 
 @app.route('/newpost', methods=['GET', 'POST'])
 @login_required
 def new_post():
     if request.method == 'POST':
+        # Add new post to database and redirect to main
         new_post = Post(user_id=session_info['user_id'], title=request.form['title'], content=request.form['content'])
         session.add(new_post)
         session.commit()
         return redirect(url_for('main'))
     else:
-        user_id = get_user_id()
-        return render_template('newpost.html', current_user=user_id)
+        return render_template('newpost.html', current_user=get_user_id())
 
 
 @app.route('/post/<int:post_id>', methods=['GET', 'POST'])
 def post(post_id):
+    # POST is for comments
     if request.method == 'POST':
-        try:
-                user_id = session_info['user_id']
-        except:
-                return redirect(url_for('login'))
-
+        # make sure user is logged in
+        user_id = get_user_id()
+        if not user_id:
+            return redirect(url_for('login'))
+        
+        # Add comment
         new_comment = Comment(user_id=user_id, post_id=post_id, content=request.form['content'])
         session.add(new_comment)
         session.commit()
         return redirect(url_for('post', post_id=post_id))
     else:
-        user_id = get_user_id()
         post = session.query(Post).get(post_id)
         comments = session.query(Comment).filter(Comment.post_id == post_id).all()
         if post:
-                return render_template('post.html', post=post, comments=comments, current_user=user_id)
+            return render_template('post.html', post=post, comments=comments, current_user=get_user_id())
         else:
-                return redirect(url_for('post_test'))
+            # If post does not exist, redirect to main page
+            return redirect(url_for('main'))
 
 
 @app.route('/post/<int:post_id>/delete', methods=['GET'])
@@ -116,14 +119,14 @@ def delete_post(post_id):
     post = session.query(Post).get(post_id)
     comments = session.query(Comment).filter(Comment.post_id == post_id).all()
     if post:
-        if post.user_id == user_id:
+        if post.user_id == get_user_id():
+            # Delete post if post exists and user_id is valid
             session.delete(post)
             for i in range(len(comments)):
                 session.delete(comments[i])
             session.commit()
-        return redirect(url_for('post_test'))
-    else:
-        return redirect(url_for('post_test'))
+
+    return redirect(url_for('main'))
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -140,7 +143,7 @@ def signup():
             new_user = User(name=request.form['username'], password_hash=hash_password(request.form['password']))
             session.add(new_user)
             session.commit()
-            return redirect(url_for('post_test'))
+            return redirect(url_for('main'))
 	else:
             return render_template('signup.html')
 
