@@ -7,3 +7,7 @@ a {
     text-decoration: none;
     color: #105d99;
 }
+
+#menu a {
+    color: #d12e06;
+}
